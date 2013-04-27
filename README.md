@@ -1,8 +1,5 @@
-Pebble-Fuzzy-French-Plus
-========================
-
 Frenchy Fuzzy watchface for Pebble
-
+==================================
 
 Hi, This is my very first Pebble Watchface !
 
@@ -21,11 +18,8 @@ Hope you will enjoy !
 
 
 
-Pebble-Fuzzy-French-Plus
-========================
-
 Horloge "floue" en Français pour Pebble
-
+=======================================
 
 Hello, ceci est ma toute première horloge pour Pebble !
 
