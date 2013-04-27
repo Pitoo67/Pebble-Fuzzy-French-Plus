@@ -13,7 +13,7 @@
 #define MY_UUID { 0xAE, 0x9D, 0x29, 0xE1, 0x55, 0x17, 0x47, 0x8D, 0xAB, 0x43, 0x79, 0xE7, 0xAA, 0x08, 0x9E, 0x8F }
 PBL_APP_INFO(MY_UUID,
              "Fuzzy French +", "pitoo.com",
-             1, 1, /* App version */
+             1, 2, /* App version */
              RESOURCE_ID_IMAGE_MENU_ICON,
              APP_INFO_WATCH_FACE);
 #define ANIMATION_DURATION 800
@@ -126,46 +126,25 @@ void update_watch(PblTm* t) {
   // Let's get the new text date
   info_lines(t, new_time.topbar, new_time.bottombar);
 
-  // Let's update the top and bottom bar anyway - **to optimize later to only update top bar every new day.
-  text_layer_set_text(&topbar.layer[0], new_time.topbar);
+  // Let's update the top bar
+  if(strcmp(new_time.topbar, cur_time.topbar) != 0) text_layer_set_text(&topbar.layer[0], new_time.topbar);
+  // Let's update the bottom bar
   text_layer_set_text(&bottombar.layer[0], new_time.bottombar);
 
   // Let's get the new text time
   fuzzy_time(t, new_time.line1, new_time.line2, new_time.line3);
 
   // update hour only if changed
-  if(strcmp(new_time.line1,cur_time.line1) != 0) updateLayer(&line1, 1);
+  if(strcmp(new_time.line1, cur_time.line1) != 0) updateLayer(&line1, 1);
   // update min1 only if changed
-  if(strcmp(new_time.line2,cur_time.line2) != 0) updateLayer(&line2, 2);
+  if(strcmp(new_time.line2, cur_time.line2) != 0) updateLayer(&line2, 2);
   // update min2 only if changed happens on
-  if(strcmp(new_time.line3,cur_time.line3) != 0) updateLayer(&line3, 3);
+  if(strcmp(new_time.line3, cur_time.line3) != 0) updateLayer(&line3, 3);
 
   // vibrate at o'clock from 9 to 18
   if(t->tm_min == 0 && t->tm_sec == 0 && t->tm_hour >= 9 && t->tm_hour <= 18 ) vibes_short_pulse();
   if(t->tm_min == 59 && t->tm_sec == 57 && t->tm_hour >= 8 && t->tm_hour <= 17 ) vibes_short_pulse();
 }
-
-void init_watch(PblTm* t) {
-  // Let's get the new text date
-  info_lines(t, new_time.topbar, new_time.bottombar);
-
-  // Let's update the top and bottom bar anyway - **to optimize later to only update top bar every new day.
-  text_layer_set_text(&topbar.layer[0], new_time.topbar);
-  text_layer_set_text(&bottombar.layer[0], new_time.bottombar);
-
-  // Let's get the new time and date
-  fuzzy_time(t, new_time.line1, new_time.line2, new_time.line3);
-
-  // backup old time to determine animation oportunity
-  strcpy(cur_time.line1, new_time.line1);
-  strcpy(cur_time.line2, new_time.line2);
-  strcpy(cur_time.line3, new_time.line3);
-
-  text_layer_set_text(&line1.layer[0], cur_time.line1);
-  text_layer_set_text(&line2.layer[0], cur_time.line2);
-  text_layer_set_text(&line3.layer[0], cur_time.line3);
-}
-
 
 // Handle the start-up of the app
 void handle_init_app(AppContextRef app_ctx) {
@@ -235,7 +214,6 @@ void handle_init_app(AppContextRef app_ctx) {
 
   PblTm t;
   get_time(&t);
-//  init_watch(&t);
   update_watch(&t);
 
   layer_add_child(&window.layer, &line3.layer[0].layer);
@@ -248,7 +226,7 @@ void handle_init_app(AppContextRef app_ctx) {
   layer_add_child(&window.layer, &topbar.layer[0].layer);
 }
 
-// Called once per minute
+// Called once per second
 void handle_minute_tick(AppContextRef ctx, PebbleTickEvent *t) {
   (void)ctx;
 
