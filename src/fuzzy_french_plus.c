@@ -13,7 +13,7 @@
 #define MY_UUID { 0xAE, 0x9D, 0x29, 0xE1, 0x55, 0x17, 0x47, 0x8D, 0xAB, 0x43, 0x79, 0xE7, 0xAA, 0x08, 0x9E, 0x8F }
 PBL_APP_INFO(MY_UUID,
              "Fuzzy French +", "pitoo.com",
-             1, 2, /* App version */
+             1, 3, /* App version */
              RESOURCE_ID_IMAGE_MENU_ICON,
              APP_INFO_WATCH_FACE);
 #define ANIMATION_DURATION 800
@@ -142,7 +142,7 @@ void update_watch(PblTm* t) {
   if(strcmp(new_time.line3, cur_time.line3) != 0) updateLayer(&line3, 3);
 
   // vibrate at o'clock from 9 to 18
-  if(t->tm_min == 0 && t->tm_sec == 0 && t->tm_hour >= 9 && t->tm_hour <= 18 ) vibes_short_pulse();
+  if(t->tm_min == 0 && t->tm_sec == 0 && t->tm_hour >= 9 && t->tm_hour <= 18 ) vibes_double_pulse();
   if(t->tm_min == 59 && t->tm_sec == 57 && t->tm_hour >= 8 && t->tm_hour <= 17 ) vibes_short_pulse();
 }
 
